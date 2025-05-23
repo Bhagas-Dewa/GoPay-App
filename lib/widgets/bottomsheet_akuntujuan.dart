@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/views/home/balance_card/keuangan/transfer_ewallet.dart';
+import 'package:gopay_task/views/home/balance_card/tariktunai/tariktunai_bank.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:gopay_task/controllers/transaction_controller.dart';
 
@@ -362,41 +364,46 @@ class _BottomsheetAkuntujuanState extends State<BottomsheetAkuntujuan> {
         children: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
-            child: Row(
-              children: [
-                Image.asset('assets/icon_bank.png', height: 24),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tambah Rekening bank',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                          letterSpacing: -0.3,
+            child: GestureDetector(
+              onTap: () {
+                Get.to(()=> TariktunaiBank());
+              },
+              child: Row(
+                children: [
+                  Image.asset('assets/icon_bank.png', height: 24),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Tambah Rekening bank',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                            letterSpacing: -0.3,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Begitu ditambah, nanti rekeningnya bakal kesimpen di daftar akunmu',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Color(0xFF626E7A),
-                          letterSpacing: -0.3,
-                          fontWeight: FontWeight.w400,
+                        Text(
+                          'Begitu ditambah, nanti rekeningnya bakal kesimpen di daftar akunmu',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: Color(0xFF626E7A),
+                            letterSpacing: -0.3,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.add_circle_rounded,
-                  color: Color(0XFF088C15),
-                  size: 22,
-                ),
-              ],
+                  Icon(
+                    Icons.add_circle_rounded,
+                    color: Color(0XFF088C15),
+                    size: 22,
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -407,41 +414,46 @@ class _BottomsheetAkuntujuanState extends State<BottomsheetAkuntujuan> {
 
           Padding(
             padding: const EdgeInsets.only(right: 20),
-            child: Row(
-              children: [
-                Image.asset('assets/icon_ewaller.png', height: 24),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tambah E-wallet kamu',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                          letterSpacing: -0.3,
+            child: GestureDetector(
+              onTap: () {
+                Get.to(()=> TransferEwallet());
+              },
+              child: Row(
+                children: [
+                  Image.asset('assets/icon_ewaller.png', height: 24),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Tambah E-wallet kamu',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                            letterSpacing: -0.3,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Biar kamu bisa transfer ke e-wallet kamu yang lain, seperti OVO, Dana, dll',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Color(0xFF626E7A),
-                          letterSpacing: -0.3,
-                          fontWeight: FontWeight.w400,
+                        Text(
+                          'Biar kamu bisa transfer ke e-wallet kamu yang lain, seperti OVO, Dana, dll',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: Color(0xFF626E7A),
+                            letterSpacing: -0.3,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.add_circle_rounded,
-                  color: Color(0XFF088C15),
-                  size: 22,
-                ),
-              ],
+                  Icon(
+                    Icons.add_circle_rounded,
+                    color: Color(0XFF088C15),
+                    size: 22,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
