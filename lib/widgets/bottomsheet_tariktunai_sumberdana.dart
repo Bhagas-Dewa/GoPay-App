@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 import 'package:gopay_task/models/bank_item_model.dart';
 
 class BottomsheetTariktunaiSumberdana extends StatelessWidget {
   BottomsheetTariktunaiSumberdana({super.key});
+
+  GopaySaldoController get saldoController => Get.find<GopaySaldoController>();
 
   final List<BankItemData> Banks = [
     BankItemData(
@@ -103,14 +108,32 @@ class BottomsheetTariktunaiSumberdana extends StatelessWidget {
                         letterSpacing: -0.3,
                       ),
                     ),
-                    Text(
-                      'Sisa saldo: ',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF626E7A),
-                        letterSpacing: -0.1,
-                      ),
+                    // sisa saldo
+                    Row(
+                      children: [
+                        Text(
+                          'Sisa saldo: ',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFF626E7A),
+                            letterSpacing: -0.1,
+                          ),
+                        ),
+                        Obx(() {
+                          final saldoController =
+                              Get.find<GopaySaldoController>();
+                          return Text(
+                            saldoController.formattedSaldo,
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Color(0xFF626E7A),
+                              letterSpacing: -0.3,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        }),
+                      ],
                     ),
                   ],
                 ),
@@ -162,7 +185,6 @@ class BottomsheetTariktunaiSumberdana extends StatelessWidget {
                 ),
               ),
             ),
-
           ),
         ],
       ),
@@ -177,10 +199,7 @@ class BottomsheetTariktunaiSumberdana extends StatelessWidget {
           CircleAvatar(
             radius: 20,
             backgroundColor: Colors.white,
-            child: Image.asset(
-              item.imagePath,
-              height: 40,
-            ),
+            child: Image.asset(item.imagePath, height: 40),
           ),
           const SizedBox(width: 15),
           Column(

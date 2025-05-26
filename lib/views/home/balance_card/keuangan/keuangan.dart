@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_widget_cache.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 import 'package:gopay_task/views/home/balance_card/keuangan/akunpenerima_blu.dart';
 import 'package:gopay_task/views/home/balance_card/keuangan/akunpenerima_shopeepay.dart';
 import 'package:gopay_task/views/home/balance_card/keuangan/keuangan_asuransi.dart';
@@ -16,6 +17,7 @@ import 'package:gopay_task/widgets/wavy_clipper.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 class Keuangan extends StatefulWidget {
+  GopaySaldoController get saldoController => Get.find<GopaySaldoController>();
   const Keuangan({super.key});
 
   @override
@@ -46,7 +48,7 @@ class _KeuanganState extends State<Keuangan> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(()=> TambahSumberdana());
+                    Get.to(() => TambahSumberdana());
                   },
                   child: Container(
                     padding: EdgeInsets.only(
@@ -137,7 +139,7 @@ class _KeuanganState extends State<Keuangan> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(()=> TambahAkunpenerima());
+                    Get.to(() => TambahAkunpenerima());
                   },
                   child: Container(
                     padding: EdgeInsets.only(
@@ -195,10 +197,15 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> SumberdanaGopaysaldo());
+              Get.to(() => SumberdanaGopaysaldo());
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 40),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 20,
+                bottom: 40,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -255,20 +262,24 @@ class _KeuanganState extends State<Keuangan> {
                         ],
                       ),
                       Spacer(),
-                      Text(
-                        'Rp5.283',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: Color(0xFF626E7A),
-                          letterSpacing: -0.3,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      Obx(() {
+                        final saldoController =
+                            Get.find<GopaySaldoController>();
+                        return Text(
+                          saldoController.formattedSaldo,
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: Color(0xFF626E7A),
+                            letterSpacing: -0.3,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        );
+                      }),
                     ],
                   ),
-            
+
                   SizedBox(height: 25),
-            
+
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(
@@ -287,7 +298,10 @@ class _KeuanganState extends State<Keuangan> {
                     ),
                     child: Row(
                       children: [
-                        Image.asset('assets/circleicon_moneybag.png', height: 24),
+                        Image.asset(
+                          'assets/circleicon_moneybag.png',
+                          height: 24,
+                        ),
                         SizedBox(width: 10),
                         Text(
                           'Upgrade & dapetin bunga 2.5%',
@@ -316,10 +330,15 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 140),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> SumberdanaCoins());
+              Get.to(() => SumberdanaCoins());
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 50),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 20,
+                bottom: 50,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -367,10 +386,15 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 210),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> SumberdanaGopaylater());
+              Get.to(() => SumberdanaGopaylater());
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 12),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 20,
+                bottom: 12,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -459,11 +483,7 @@ class _KeuanganState extends State<Keuangan> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              Positioned.fill(
-                child: Container(
-                  color: const Color(0xFFEEEFF3)
-                ),
-              ),
+              Positioned.fill(child: Container(color: const Color(0xFFEEEFF3))),
 
               // Kurva putih dengan clipper
               Positioned(
@@ -484,10 +504,7 @@ class _KeuanganState extends State<Keuangan> {
                 right: 0,
                 height: 33,
                 child: CustomPaint(
-                  painter: WavePainter(
-                    dottedLineOffset: 8.0, 
-                    drawShadow: true
-                  ),
+                  painter: WavePainter(dottedLineOffset: 8.0, drawShadow: true),
                   size: Size(MediaQuery.of(context).size.width, 40),
                 ),
               ),
@@ -499,10 +516,15 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> KeuanganSimpanan());
+              Get.to(() => KeuanganSimpanan());
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 30),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 12,
+                bottom: 30,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -561,7 +583,7 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 65),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> KeuanganAsuransi());
+              Get.to(() => KeuanganAsuransi());
             },
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16, top: 12),
@@ -617,9 +639,9 @@ class _KeuanganState extends State<Keuangan> {
                       ),
                     ],
                   ),
-            
+
                   SizedBox(height: 20),
-            
+
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(
@@ -891,10 +913,15 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> AkunpenerimaShopeepay());
+              Get.to(() => AkunpenerimaShopeepay());
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 30),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 12,
+                bottom: 30,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -961,7 +988,7 @@ class _KeuanganState extends State<Keuangan> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 65),
           child: GestureDetector(
             onTap: () {
-              Get.to(()=> AkunpenerimaBlu());
+              Get.to(() => AkunpenerimaBlu());
             },
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 5),
@@ -1026,7 +1053,6 @@ class _KeuanganState extends State<Keuangan> {
             ),
           ),
         ),
-
       ],
     );
   }

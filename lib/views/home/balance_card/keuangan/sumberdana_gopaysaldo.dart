@@ -2,12 +2,14 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 import 'package:gopay_task/controllers/toggle_controller.dart';
 import 'package:gopay_task/widgets/toggle_swtich.dart';
 
 class SumberdanaGopaysaldo extends StatefulWidget {
   SumberdanaGopaysaldo({super.key});
   final ToggleController controller = Get.put(ToggleController());
+  GopaySaldoController get saldoController => Get.find<GopaySaldoController>();
 
   @override
   State<SumberdanaGopaysaldo> createState() => _SumberdanaGopaysaldoState();
@@ -189,15 +191,18 @@ class _SumberdanaGopaysaldoState extends State<SumberdanaGopaysaldo> {
             children: [
               Image.asset('assets/detail_dompet.png', height: 30),
               SizedBox(width: 10),
-              Text(
-                'Rp5.283',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: Colors.black,
-                  letterSpacing: -0.3,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              Obx(() {
+                final saldoController = Get.find<GopaySaldoController>();
+                return Text(
+                  saldoController.formattedSaldo,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Colors.black,
+                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.w600,
+                  ),
+                );
+              }),
             ],
           ),
 

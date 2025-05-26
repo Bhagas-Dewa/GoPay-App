@@ -1,7 +1,10 @@
 import 'package:get/get.dart';
+import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 
 class HomeController extends GetxController {
   final RxBool _isEyesOpen = true.obs;
+
+  GopaySaldoController get saldoController => Get.find<GopaySaldoController>();
 
   bool get isEyesOpen => _isEyesOpen.value;
 
@@ -11,7 +14,7 @@ class HomeController extends GetxController {
   }
 
   String getBalanceText() {
-    return _isEyesOpen.value ? 'Rp100.000' : 'Rp • • • • •';
+    return _isEyesOpen.value ? saldoController.formattedSaldo : 'Rp • • • • •';
   }
 
   String getCoinsText() {

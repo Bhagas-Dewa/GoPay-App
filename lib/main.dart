@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/balancecard_controller.dart';
+import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 import 'package:gopay_task/controllers/home_controller.dart';
 import 'package:gopay_task/controllers/kirimterima_controller.dart';
 import 'package:gopay_task/controllers/numpad_controller.dart';
@@ -19,11 +20,12 @@ void main() async {
   
   // Initialize GetX controllers
   Get.put(HomeController());
+  Get.put(HistoryTransactionController()); 
+  Get.put(GopaySaldoController(), permanent: true);
   Get.put(KirimTerimaController());
   Get.put(PromoController());
   Get.put(BalancecardController());
   Get.put(TransactionController()); 
-  Get.put(HistoryTransactionController()); 
   Get.put(NumpadController());
   
   SystemChrome.setSystemUIOverlayStyle(
