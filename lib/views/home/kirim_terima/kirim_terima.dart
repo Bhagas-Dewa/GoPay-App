@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/views/home/kirim_terima/detail_kirim_terima.dart';
+import 'package:gopay_task/views/home/kirim_terima/minta/minta_page.dart';
 import 'package:gopay_task/views/home/kirim_terima/transfer/transfer_page.dart';
 import 'package:gopay_task/widgets/button_lihatsemua.dart';
 
@@ -267,36 +268,41 @@ class KirimTerima extends StatelessWidget {
                       ),
                     ),
 
-                    Column(
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFFDF4D5),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/kirimterima_minta.png',
-                              height: 42,
-                              width: 42,
-                              fit: BoxFit.contain,
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(()=> MintaPage());
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 60,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFFDF4D5),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'assets/kirimterima_minta.png',
+                                height: 42,
+                                width: 42,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        Text(
-                          'Minta',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: Color(0xFF626E7A),
-                            letterSpacing: -0.3,
-                            height: 1,
+                          SizedBox(height: 7),
+                          Text(
+                            'Minta',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Color(0xFF626E7A),
+                              letterSpacing: -0.3,
+                              height: 1,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
                     Column(

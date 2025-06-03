@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/controllers/auth_controller.dart';
 import 'package:gopay_task/controllers/balancecard_controller.dart';
 import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 import 'package:gopay_task/controllers/home_controller.dart';
@@ -19,6 +20,7 @@ void main() async {
   await initializeDateFormatting('id_ID', null);
   
   // Initialize GetX controllers
+  Get.put(AuthController());
   Get.put(HomeController());
   Get.put(HistoryTransactionController()); 
   Get.put(GopaySaldoController(), permanent: true);

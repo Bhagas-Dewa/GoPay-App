@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/views/home/home.dart';
+import 'package:gopay_task/views/login/start_page.dart';
 
 class OnboardingSplash extends StatelessWidget {
   const OnboardingSplash({super.key});
@@ -11,10 +13,7 @@ class OnboardingSplash extends StatelessWidget {
       backgroundColor: const Color(0xFF01AED6),
       body: GestureDetector(
         onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Home()),
-          );
+          Get.offAll(()=> StartPage());
         },
         child: Center(
           child: Column(
