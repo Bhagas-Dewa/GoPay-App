@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/controllers/auth_controller.dart';
 import 'package:gopay_task/views/login/pin_login_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,6 +14,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final AuthController authController = Get.find<AuthController>();
+
+   @override
+  void initState() {
+    super.initState();
+    // Bersihkan input email setiap kali halaman login dibuka
+    // authController.clearEmailInput();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,62 +92,66 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        children: [
-          Text(
-            'Selamat Datang kembali, silahkan Masuk!',
-            style: GoogleFonts.lora(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'Masuk hanya dalam beberapa langkah mudah.',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Alamat Email*',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 10),
-          _buildTextField(),
-          SizedBox(height: 390),
-          _buildButtonLanjut(),
-          SizedBox(height: 15),
-          _buildTextSnK(),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'from',
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  letterSpacing: -0.3,
-                ),
+      body: Obx(()=> 
+       authController.isLoading.value
+        ? Center(child: CircularProgressIndicator()) // Tampilkan loading
+        : ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          children: [
+            Text(
+              'Selamat Datang kembali, silahkan Masuk!',
+              style: GoogleFonts.lora(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                letterSpacing: -0.3,
               ),
-              SizedBox(width: 5),
-              Image.asset('assets/logo_goto.png', height: 12),
-            ],
-          ),
-        ],
+            ),
+            SizedBox(height: 5),
+            Text(
+              'Masuk hanya dalam beberapa langkah mudah.',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF626E7A),
+                letterSpacing: -0.3,
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Alamat Email*',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF626E7A),
+                letterSpacing: -0.3,
+              ),
+            ),
+            SizedBox(height: 10),
+            _buildTextField(),
+            SizedBox(height: 390),
+            _buildButtonLanjut(),
+            SizedBox(height: 15),
+            _buildTextSnK(),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'from',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Image.asset('assets/logo_goto.png', height: 12),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -158,6 +172,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(width: 10),
         Expanded(
           child: TextField(
+            controller: authController.emailController,
             style: GoogleFonts.inter(
               fontSize: 14,
               color: Color(0xFF626E7A),
@@ -191,9 +206,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildButtonLanjut() {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => PinLoginPage());
-      },
+       onTap: authController.isLoading.value 
+          ? null
+          : () {
+              authController.checkEmailLogin();
+            },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         width: double.infinity,

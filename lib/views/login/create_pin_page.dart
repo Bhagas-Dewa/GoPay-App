@@ -18,28 +18,29 @@ class CreatePinPage extends StatefulWidget {
 class _CreatePinPageState extends State<CreatePinPage> {
   // Get existing AuthController instance atau create baru jika belum ada
   final AuthController authController = Get.find<AuthController>();
-  
+
   final TextEditingController _textController = TextEditingController();
   final FocusNode _pinFocusNode = FocusNode();
-  
+
   @override
   void initState() {
     super.initState();
     // Clear PIN data when entering create PIN page
-    authController.clearPinData();
-    
+    authController.clearPinCreationData();
+
     // Auto focus pada input PIN
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _pinFocusNode.requestFocus();
     });
   }
-  
+
   @override
   void dispose() {
-    _textController.dispose();
     _pinFocusNode.dispose();
     super.dispose();
   }
+
+  void _onPinChanged(String value) {}
 
   @override
   Widget build(BuildContext context) {
@@ -53,31 +54,53 @@ class _CreatePinPageState extends State<CreatePinPage> {
           size: 24,
         ),
       ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        children: [
-          Text(
-            'PIN bikin bayar-bayar dan log in jadi lebih aman. Pilih PIN yang unik dan jangan dibagiin ke siapapun.',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
+      body: Obx(() {
+        if (authController.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(color: Color(0xFF088C15)),
+          );
+        }
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          children: [
+            Text(
+              'PIN bikin bayar-bayar dan log in jadi lebih aman. Pilih PIN yang unik dan jangan dibagiin ke siapapun.',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF626E7A),
+                letterSpacing: -0.3,
+              ),
             ),
-          ),
+            SizedBox(height: 25),
+            _buildPinSectionTitle("Buat PIN Baru"), // Judul field
+            SizedBox(height: 10),
+            _buildPinInputWidget(), // Hanya satu field PIN
+            SizedBox(height: 20),
+            _buildTipsAman(),
+            // Sesuaikan spacing agar tombol tidak terlalu jauh atau tertutup keyboard
+            SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+            _buildButtonLanjut(),
+            SizedBox(height: 20),
+          ],
+        );
+      }),
+    );
+  }
 
-          SizedBox(height: 15),
-          _buildPin(),
-          SizedBox(height: 20),
-          _buildTipsAman(),
-          SizedBox(height: 290),
-          _buildButtonLanjut(),
-        ],
+  Widget _buildPinSectionTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black87,
+        letterSpacing: -0.3,
       ),
     );
   }
 
-  Widget _buildPin() {
+  Widget _buildPinInputWidget() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
@@ -87,7 +110,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.only(left: 30, right: 20),
             width: double.infinity,
             height: 70,
             decoration: inset.BoxDecoration(
@@ -107,69 +130,92 @@ class _CreatePinPageState extends State<CreatePinPage> {
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // PIN Dots Display
-                Obx(() => Row(
-                  children: List.generate(6, (index) {
-                    bool isFilled = authController.isPinDotFilled(index);
-                    return Container(
-                      margin: EdgeInsets.only(right: index < 5 ? 20 : 0),
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isFilled 
-                            ? Color(0xFF088C15) 
-                            : Color(0xFF626E7A), 
-                          width: 1.5
-                        ),
-                        color: isFilled 
-                          ? (authController.isPinObscured.value ? Color(0xFF088C15) : Colors.transparent)
-                          : Colors.transparent,
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: List.generate(AuthController.maxPinLength, (index) {
+                  bool isFilled = authController.isPinDotFilled(
+                    index,
+                  ); // isConfirm: false default
+                  String digitToShow = authController.getPinDigit(
+                    index,
+                  ); // isConfirm: false default
+                  bool isCurrentlyObscured = authController.isPinObscured.value;
+
+                  return Container(
+                    margin: EdgeInsets.only(
+                      right: index < AuthController.maxPinLength - 1 ? 20 : 0,
+                    ),
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isFilled ? Color(0xFF088C15) : Color(0xFF626E7A),
+                        width: 1.5,
                       ),
-                      child: authController.isPinObscured.value && isFilled 
-                        ? null 
-                        : Center(
-                            child: Text(
-                              authController.getPinDigit(index),
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF088C15),
+                      color:
+                          isFilled
+                              ? (isCurrentlyObscured
+                                  ? Color(0xFF088C15)
+                                  : Colors.transparent)
+                              : Colors.transparent,
+                    ),
+                    child:
+                        (isCurrentlyObscured && isFilled)
+                            ? null
+                            : Center(
+                              child: Text(
+                                digitToShow,
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF088C15),
+                                ),
                               ),
                             ),
-                          ),
-                    );
-                  }),
-                )),
-              ],
+                  );
+                }),
+              ),
             ),
           ),
-          
-          // Invisible TextField for input
           Positioned.fill(
+            top: 12,
             child: TextField(
-              controller: _textController,
+              controller:
+                  authController
+                      .pinInputController, 
               focusNode: _pinFocusNode,
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(6),
+                LengthLimitingTextInputFormatter(AuthController.maxPinLength),
               ],
-              obscureText: false,
-              style: TextStyle(color: Colors.transparent),
+              obscureText:
+                  authController.isPinObscured.value, 
+              obscuringCharacter: '●',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.transparent, fontSize: 1),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 counterText: '',
+                contentPadding: EdgeInsets.zero,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    authController.isPinObscured.value
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded,
+                    color: Colors.grey,
+                    size: 22,
+                  ),
+                  onPressed: () {
+                    authController.isPinObscured.toggle();
+                  },
+                ),
               ),
               cursorColor: Colors.transparent,
               showCursor: false,
-              onChanged: (value) {
-                authController.updatePin(value);
-              },
+              onChanged: _onPinChanged,
             ),
           ),
         ],
@@ -197,16 +243,25 @@ class _CreatePinPageState extends State<CreatePinPage> {
             ),
           ),
           SizedBox(height: 10),
-          _buildTipItem('1', 'Hindari nomor berulang & berutut, contoh 123456.'),
+          _buildTipItem(
+            '1',
+            'Hindari nomor berulang & berutut, contoh 123456.',
+          ),
           SizedBox(height: 10),
-          _buildTipItem('2', 'Jangan pakai tanggal lahir, nomor HP, atau nama yang mudah ditebak.'),
+          _buildTipItem(
+            '2',
+            'Jangan pakai tanggal lahir, nomor HP, atau nama yang mudah ditebak.',
+          ),
           SizedBox(height: 10),
-          _buildTipItem('3', 'Buat PIN unik yang gak pernah dipake sebelumnya.'),
+          _buildTipItem(
+            '3',
+            'Buat PIN unik yang gak pernah dipake sebelumnya.',
+          ),
         ],
       ),
     );
   }
-  
+
   Widget _buildTipItem(String number, String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -244,48 +299,55 @@ class _CreatePinPageState extends State<CreatePinPage> {
   }
 
   Widget _buildButtonLanjut() {
-    return Obx(() => GestureDetector(
-      onTap: () async {
-        if (authController.validateCreatePin()) {
-          // Optional: Call API to create PIN
-          // bool success = await authController.createPinAPI();
-          // if (success) {
-            Get.to(() => Home());
-          // }
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: authController.isPinComplete.value 
-            ? LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0XFF5DB466), Color(0XFF088C15)],
-                stops: [0.2, 1.0],
-              )
-            : LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFD0D0D0), Color(0xFFB0B0B0)],
-                stops: [0.2, 1.0],
-              ),
-          borderRadius: BorderRadius.circular(45),
-        ),
-        child: Text(
-          'Lanjut',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: authController.isPinComplete.value 
-              ? Colors.white 
-              : Colors.grey.shade600,
-            letterSpacing: -0.3,
-            fontWeight: FontWeight.w600,
+    return Obx(() {
+      // Tombol aktif jika PIN sudah lengkap (6 digit) dan tidak sedang loading
+      bool canProceed =
+          authController.isPinComplete.value && !authController.isLoading.value;
+
+      return GestureDetector(
+        onTap:
+            canProceed
+                ? () async {
+                  // Validasi ada di dalam setUserPin sekarang (via validateCreatePin)
+                  await authController.setUserPin();
+                }
+                : null,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient:
+                canProceed
+                    ? LinearGradient(
+                      colors: [Color(0XFF5DB466), Color(0XFF088C15)],
+                    )
+                    : LinearGradient(
+                      colors: [Color(0xFFD0D0D0), Color(0xFFB0B0B0)],
+                    ),
+            borderRadius: BorderRadius.circular(45),
           ),
-          textAlign: TextAlign.center,
+          child:
+              authController.isLoading.value
+                  ? SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                  : Text(
+                    'Lanjut',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      color: canProceed ? Colors.white : Colors.grey.shade600,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.3,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
         ),
-      ),
-    ));
+      );
+    });
   }
 }

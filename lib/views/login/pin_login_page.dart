@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart' as inset;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart' as inset; // Pastikan alias 'inset' digunakan
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/auth_controller.dart';
@@ -15,26 +15,28 @@ class PinLoginPage extends StatefulWidget {
 
 class _PinLoginPageState extends State<PinLoginPage> {
   final AuthController authController = Get.find<AuthController>();
-  final TextEditingController _textController = TextEditingController();
   final FocusNode _pinFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    // Clear PIN data when entering create PIN page
-    authController.clearPinData();
-
-    // Auto focus pada input PIN
+    authController.clearPinLoginInput();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pinFocusNode.requestFocus();
+      FocusScope.of(context).requestFocus(_pinFocusNode);
     });
   }
 
   @override
   void dispose() {
-    _textController.dispose();
     _pinFocusNode.dispose();
     super.dispose();
+  }
+  void _onPinChanged(String value) {
+    if (value.length == AuthController.maxPinLength) {
+      if (!authController.isLoading.value) { 
+         authController.loginWithPin();
+      }
+    }
   }
 
   @override
@@ -44,31 +46,40 @@ class _PinLoginPageState extends State<PinLoginPage> {
       appBar: AppbarSecondary(
         backgroundColor: const Color(0xFFEEEFF3),
         title: 'Masukkan PIN kamu',
-        rightIcon: Icon(
-          Icons.help_outlined,
-          color: const Color.fromARGB(255, 61, 61, 61),
-          size: 24,
-        ),
-      ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        children: [
-          Text(
-            'Silahkan ketik 6 digit PIN kamu buat lanjut.',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
-            ),
+        rightIcon: GestureDetector(
+          onTap: () {
+            Get.snackbar("Bantuan", "Halaman bantuan belum tersedia.", snackPosition: SnackPosition.BOTTOM);
+          },
+          child: Icon(
+            Icons.help_outlined,
+            color: const Color.fromARGB(255, 61, 61, 61),
+            size: 24,
           ),
-
-          SizedBox(height: 15),
-          _buildPin(),
-          SizedBox(height: 20),
-          _buildButtonLupaPin(),
-        ],
+        )
       ),
+      body: Obx(() { 
+        if (authController.isLoading.value) {
+          return Center(child: CircularProgressIndicator(color: Color(0xFF088C15)));
+        }
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          children: [
+            Text(
+              'Silahkan ketik 6 digit PIN kamu buat lanjut.',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF626E7A),
+                letterSpacing: -0.3,
+              ),
+            ),
+            SizedBox(height: 15),
+            _buildPinWidget(), 
+            SizedBox(height: 20),
+            _buildButtonLupaPin(),
+          ],
+        );
+      }),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 20),
         child: Row(
@@ -91,7 +102,7 @@ class _PinLoginPageState extends State<PinLoginPage> {
     );
   }
 
-  Widget _buildPin() {
+  Widget _buildPinWidget() { 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
@@ -104,7 +115,7 @@ class _PinLoginPageState extends State<PinLoginPage> {
             padding: EdgeInsets.symmetric(horizontal: 20),
             width: double.infinity,
             height: 70,
-            decoration: inset.BoxDecoration(
+            decoration: inset.BoxDecoration( 
               borderRadius: BorderRadius.circular(10),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -121,76 +132,47 @@ class _PinLoginPageState extends State<PinLoginPage> {
                 ),
               ],
             ),
-            child: Row(
+            child: Obx(() => Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // PIN Dots Display
-                Obx(
-                  () => Row(
-                    children: List.generate(6, (index) {
-                      bool isFilled = authController.isPinDotFilled(index);
-                      return Container(
-                        margin: EdgeInsets.only(right: index < 5 ? 20 : 0),
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:
-                                isFilled
-                                    ? Color(0xFF088C15)
-                                    : Color(0xFF626E7A),
-                            width: 1.5,
-                          ),
-                          color:
-                              isFilled
-                                  ? (authController.isPinObscured.value
-                                      ? Color(0xFF088C15)
-                                      : Colors.transparent)
-                                  : Colors.transparent,
-                        ),
-                        child:
-                            authController.isPinObscured.value && isFilled
-                                ? null
-                                : Center(
-                                  child: Text(
-                                    authController.getPinDigit(index),
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF088C15),
-                                    ),
-                                  ),
-                                ),
-                      );
-                    }),
+              children: List.generate(AuthController.maxPinLength, (index) {
+                bool isFilled = index < authController.pinForUIDisplay.value.length; 
+                return Container(
+                  margin: EdgeInsets.only(right: index < AuthController.maxPinLength - 1 ? 20 : 0),
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isFilled ? Color(0xFF088C15) : Color(0xFF626E7A),
+                      width: 1.5,
+                    ),
+                    color: isFilled ? Color(0xFF088C15) : Colors.transparent,
                   ),
-                ),
-              ],
-            ),
+                );
+              }),
+            )),
           ),
-
-          // Invisible TextField for input
           Positioned.fill(
             child: TextField(
-              controller: _textController,
+              controller: authController.pinInputController,
               focusNode: _pinFocusNode,
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(6),
+                LengthLimitingTextInputFormatter(AuthController.maxPinLength),
               ],
-              obscureText: false,
-              style: TextStyle(color: Colors.transparent),
+              obscureText: true,
+              obscuringCharacter: '●',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.transparent, fontSize: 1),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 counterText: '',
+                contentPadding: EdgeInsets.zero,
               ),
               cursorColor: Colors.transparent,
               showCursor: false,
-              onChanged: (value) {
-                authController.updatePin(value);
-              },
+              onChanged: _onPinChanged, 
             ),
           ),
         ],
@@ -201,23 +183,28 @@ class _PinLoginPageState extends State<PinLoginPage> {
   Widget _buildButtonLupaPin() {
     return Padding(
       padding: const EdgeInsets.only(right: 241),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: Color(0XFFF4FEF5),
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(
-            color: Color(0XFF3DC66C).withOpacity(0.5),
-            width: 1,
+      child: GestureDetector(
+        onTap: () {
+          Get.snackbar('Info', 'Fitur Lupa PIN belum diimplementasikan.', snackPosition: SnackPosition.BOTTOM);
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          decoration: BoxDecoration(
+            color: Color(0XFFF4FEF5),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: Color(0XFF3DC66C).withOpacity(0.5),
+              width: 1,
+            ),
           ),
-        ),
-        child: Text(
-          'Lupa PIN',
-          style: GoogleFonts.lora(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF088C15),
-            letterSpacing: -0.1,
+          child: Text(
+            'Lupa PIN',
+            style: GoogleFonts.lora(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF088C15),
+              letterSpacing: -0.1,
+            ),
           ),
         ),
       ),

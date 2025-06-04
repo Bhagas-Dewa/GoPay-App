@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,10 +15,24 @@ class OtpPage extends StatefulWidget {
 }
 
 class _OtpPageState extends State<OtpPage> {
+  final AuthController authController = Get.find<AuthController>();
+
+   @override
+  void initState() {
+    super.initState();
+    authController.clearOtpInput(); 
+  }
+
+  void _onOtpChanged(String value) {
+    if (value.length == AuthController.maxPinLength) {
+      if (!authController.isLoading.value) {
+        authController.verifyOtp();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.find<AuthController>();
-
     return Scaffold(
       backgroundColor: Color(0xFFEEEFF3),
       appBar: AppBar(
@@ -59,83 +74,57 @@ class _OtpPageState extends State<OtpPage> {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        children: [
-          Text(
-            'Cek Gmail, ya!',
-            style: GoogleFonts.lora(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'Kodenya kami kirim ke alamat email yang kamu daftarkan. Silakan cek kotak masuk atau folder spam.',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'OTP*',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 10),
-          _buildTextField(),
-          SizedBox(height: 15),
-          Obx(() => Row(
-            children: [
-              GestureDetector(
-                onTap: authController.resendOtp,
-                child: Text(
-                  'Kirim ulang?',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: authController.canResend.value 
-                        ? Color(0XFF088C15) 
-                        : Color(0xFF626E7A),
-                    letterSpacing: -0.3,
-                    decoration: authController.canResend.value 
-                        ? TextDecoration.underline 
-                        : TextDecoration.none,
-                    decorationColor: authController.canResend.value 
-                        ? Color(0XFF088C15) 
-                        : null,
-                  ),
-                ),
+      body: Obx(() { 
+        if (authController.isLoading.value) {
+          return Center(child: CircularProgressIndicator(color: Color(0xFF088C15)));
+        }
+        return ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          children: [
+            Text(
+              'Cek Gmail, ya!',
+              style: GoogleFonts.lora(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                letterSpacing: -0.3,
               ),
-              SizedBox(width: 5),
-              Text(
-                authController.canResend.value 
-                    ? '' 
-                    : authController.formatTime(authController.countdown.value),
+            ),
+            SizedBox(height: 5),
+            RichText(
+              text: TextSpan(
                 style: GoogleFonts.inter(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF626E7A),
                   letterSpacing: -0.3,
                 ),
+                children: <TextSpan>[
+                  TextSpan(text: 'Kodenya kami kirim ke alamat email '),
+                  TextSpan(
+                    text: authController.currentEmailForRegistration.value,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+                  ),
+                  TextSpan(text: '. Silakan cek kotak masuk atau folder spam.'),
+                ],
               ),
-            ],
-          )),
-          SizedBox(height: 450),
-          GestureDetector(
-            onTap: () {
-              Get.to(()=> CreateNamePage());
-            },
-            child: Row(
+            ),
+            SizedBox(height: 20),
+            Text(
+              'OTP*',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF626E7A),
+                letterSpacing: -0.3,
+              ),
+            ),
+            SizedBox(height: 10),
+            _buildOtpTextField(), 
+            SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.5), 
+
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -151,13 +140,14 @@ class _OtpPageState extends State<OtpPage> {
                 Image.asset('assets/logo_goto.png', height: 12),
               ],
             ),
-          ),
-        ],
-      ),
+            SizedBox(height: 20),
+          ],
+        );
+      }),
     );
   }
 
-  Widget _buildTextField() {
+  Widget _buildOtpTextField() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -173,6 +163,7 @@ class _OtpPageState extends State<OtpPage> {
         SizedBox(width: 10),
         Expanded(
           child: TextField(
+            controller: authController.otpController,
             style: GoogleFonts.inter(
               fontSize: 14,
               color: Colors.black,
@@ -198,7 +189,11 @@ class _OtpPageState extends State<OtpPage> {
               isDense: true,
             ),
             keyboardType: TextInputType.number,
-            maxLength: 6,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(AuthController.maxPinLength), // Batasi 6 digit
+            ],
+            onChanged: _onOtpChanged, 
           ),
         ),
       ],

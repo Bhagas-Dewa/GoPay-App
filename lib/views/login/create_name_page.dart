@@ -4,9 +4,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/auth_controller.dart';
 import 'package:gopay_task/views/login/create_pin_page.dart';
 
-class CreateNamePage extends StatelessWidget {
+class CreateNamePage extends StatefulWidget {
   CreateNamePage({super.key});
+
+  @override
+  State<CreateNamePage> createState() => _CreateNamePageState();
+}
+
+class _CreateNamePageState extends State<CreateNamePage> {
   final AuthController authController = Get.find<AuthController>();
+
+   @override
+  void initState() {
+    super.initState();
+    authController.clearNameInput();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,53 +63,58 @@ class CreateNamePage extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        children: [
-          Text(
-            'Isi data diri dulu, ya',
-            style: GoogleFonts.lora(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Nama*',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF626E7A),
-              letterSpacing: -0.3,
-            ),
-          ),
-          SizedBox(height: 10),
-          _buildTextField(),
-          SizedBox(height: 15),
-         
-          SizedBox(height: 490),
-          _buildButtonLanjut(),
-          SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'from',
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  letterSpacing: -0.3,
-                ),
+      body: Obx(() { // Bungkus dengan Obx untuk isLoading
+        if (authController.isLoading.value) {
+          return Center(child: CircularProgressIndicator(color: Color(0xFF088C15)));
+        }
+        return ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          children: [
+            Text(
+              'Isi data diri dulu, ya',
+              style: GoogleFonts.lora(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                letterSpacing: -0.3,
               ),
-              SizedBox(width: 5),
-              Image.asset('assets/logo_goto.png', height: 12),
-            ],
-          ),
-        ],
-      ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Nama*',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF626E7A),
+                letterSpacing: -0.3,
+              ),
+            ),
+            SizedBox(height: 10),
+            _buildTextField(),
+            SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.55),
+            _buildButtonLanjut(),
+            SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'from',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                SizedBox(width: 5),
+                Image.asset('assets/logo_goto.png', height: 12),
+              ],
+            ),
+            SizedBox(height: 20),
+          ],
+        );
+      }),
     );
   }
 
@@ -107,6 +124,7 @@ class CreateNamePage extends StatelessWidget {
       children: [
         Expanded(
           child: TextField(
+            controller: authController.nameController,
             style: GoogleFonts.inter(
               fontSize: 14,
               color: Colors.black,
@@ -115,11 +133,11 @@ class CreateNamePage extends StatelessWidget {
             ),
             cursorColor: Color(0XFF088C15),
             decoration: InputDecoration(
-              hintText: 'Ketik nama kamu disni',
+              hintText: 'Ketik nama kamu disini',
               hintStyle: GoogleFonts.inter(
                 fontSize: 14,
                 letterSpacing: -0.3,
-                color: Colors.black,
+                color: Colors.black.withOpacity(0.6),
                 fontWeight: FontWeight.w400,
               ),
               enabledBorder: UnderlineInputBorder(
@@ -131,6 +149,7 @@ class CreateNamePage extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(vertical: 5),
               isDense: true,
             ),
+            keyboardType: TextInputType.name,
           ),
         ),
       ],
@@ -139,9 +158,11 @@ class CreateNamePage extends StatelessWidget {
 
   Widget _buildButtonLanjut() {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => CreatePinPage());
-      },
+      onTap: authController.isLoading.value
+            ? null 
+            : () {
+                authController.setUserName();
+              },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         width: double.infinity,
@@ -154,17 +175,26 @@ class CreateNamePage extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(45),
         ),
-        child: Text(
-          'Lanjut',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: Colors.white,
-            letterSpacing: -0.3,
-            fontWeight: FontWeight.w600,
-          ),
-          textAlign: TextAlign.center,
+        child: authController.isLoading.value
+            ? SizedBox( 
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Text(
+                'Lanjut',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  color: Colors.white,
+                  letterSpacing: -0.3,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
         ),
-      ),
-    );
+      );
   }
 }
