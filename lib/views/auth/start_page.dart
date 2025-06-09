@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gopay_task/views/login/login_page.dart';
-import 'package:gopay_task/views/login/register_page.dart';
+import 'package:gopay_task/views/auth/login_page.dart';
+import 'package:gopay_task/views/auth/register_page.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});

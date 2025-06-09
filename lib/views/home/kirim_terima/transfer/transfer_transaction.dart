@@ -233,6 +233,7 @@ class _TransferTransactionState extends State<TransferTransaction> {
 
   Widget _buildNominal() {
     return Container(
+       key: const Key('nominal_display_container'), 
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),

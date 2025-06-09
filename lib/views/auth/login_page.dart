@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/auth_controller.dart';
-import 'package:gopay_task/views/login/pin_login_page.dart';
+import 'package:gopay_task/views/auth/pin_login_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,8 +19,6 @@ class _LoginPageState extends State<LoginPage> {
    @override
   void initState() {
     super.initState();
-    // Bersihkan input email setiap kali halaman login dibuka
-    // authController.clearEmailInput();
   }
   
   @override

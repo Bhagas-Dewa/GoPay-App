@@ -5,16 +5,27 @@ import 'package:gopay_task/models/user_model.dart';
 import 'package:gopay_task/services/auth_service.dart'; 
 import 'package:gopay_task/services/storage_service.dart';
 import 'package:gopay_task/views/home/home.dart';
-import 'package:gopay_task/views/login/create_name_page.dart';
-import 'package:gopay_task/views/login/create_pin_page.dart';
-import 'package:gopay_task/views/login/otp_page.dart';
-import 'package:gopay_task/views/login/pin_login_page.dart';
-import 'package:gopay_task/views/login/start_page.dart';
+import 'package:gopay_task/views/auth/create_name_page.dart';
+import 'package:gopay_task/views/auth/create_pin_page.dart';
+import 'package:gopay_task/views/auth/otp_page.dart';
+import 'package:gopay_task/views/auth/pin_login_page.dart';
+import 'package:gopay_task/views/auth/start_page.dart';
 
 class AuthController extends GetxController {
   // Dependencies
-  final AuthService _authService = Get.find<AuthService>();
-  final StorageService _storageService = Get.find<StorageService>();
+  // final AuthService _authService = Get.find<AuthService>();
+  // final StorageService _storageService = Get.find<StorageService>();
+
+   // Dependencies
+  final AuthService _authService;
+  final StorageService _storageService;
+
+  // Constructor untuk menerima service
+  AuthController({
+    required AuthService authService,
+    required StorageService storageService,
+  })  : _authService = authService,
+        _storageService = storageService;
 
   // Loading state
   final RxBool isLoading = false.obs;
@@ -22,7 +33,7 @@ class AuthController extends GetxController {
   // User and Auth State
   final Rx<User?> authenticatedUser = Rx<User?>(null);
   final RxBool isAuthenticated = false.obs;
-  String? _token; // Internal token storage
+  String? _token; 
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -30,15 +41,10 @@ class AuthController extends GetxController {
   final TextEditingController pinInputController = TextEditingController();
   final RxString pinForUIDisplay = ''.obs;
 
-  // Email yang sedang dalam proses registrasi
   final RxString currentEmailForRegistration = ''.obs;
 
-  // RxString confirmPin = ''.obs;
   RxBool isPinObscured = true.obs;
-  // RxBool isConfirmPinObscured = true.obs; 
   RxBool isPinComplete = false.obs; 
-  // RxBool isConfirmPinComplete = false.obs; 
-  // RxBool isPinMatched = false.obs;
   static const int maxPinLength = 6;
 
 
@@ -75,7 +81,7 @@ class AuthController extends GetxController {
   Future<void> fetchAuthenticatedUser({bool isInitialCheck = false}) async {
     if (_token == null) {
       isAuthenticated.value = false;
-      if (!isInitialCheck) Get.offAllNamed('/login_start'); // Ganti dengan nama route halaman awal loginmu
+      if (!isInitialCheck) Get.offAllNamed('/login_start'); //blm update
       return;
     }
     isLoading.value = true;
@@ -84,9 +90,8 @@ class AuthController extends GetxController {
       if (user != null) {
         authenticatedUser.value = user;
         isAuthenticated.value = true;
-        if (!isInitialCheck) Get.offAllNamed('/home'); // Ganti dengan nama route halaman utama aplikasi
+        if (!isInitialCheck) Get.offAllNamed('/home'); //blm update
       } else {
-        // Jika getMe gagal (misal token expired), logout
         await logout();
       }
     } catch (e) {

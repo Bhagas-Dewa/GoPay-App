@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/auth_controller.dart';
-import 'package:gopay_task/views/login/create_pin_page.dart';
+import 'package:gopay_task/views/auth/create_pin_page.dart';
 
 class CreateNamePage extends StatefulWidget {
   CreateNamePage({super.key});

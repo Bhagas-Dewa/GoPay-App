@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/auth_controller.dart';
-import 'package:gopay_task/views/login/create_name_page.dart';
-import 'package:gopay_task/views/login/create_pin_page.dart';
+import 'package:gopay_task/views/auth/create_name_page.dart';
+import 'package:gopay_task/views/auth/create_pin_page.dart';
 
 class OtpPage extends StatefulWidget {
   const OtpPage({super.key});

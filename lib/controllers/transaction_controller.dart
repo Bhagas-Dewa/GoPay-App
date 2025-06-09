@@ -1,9 +1,8 @@
-// Transaction_controller.dart - Updated version
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gopay_task/controllers/gopaysaldo_controller.dart';
 import 'package:gopay_task/controllers/historytransaction_controller.dart';
-import 'package:gopay_task/models/transaction_model.dart'; // Tambahkan import
+import 'package:gopay_task/models/transaction_model.dart'; 
 import 'package:intl/intl.dart';
 
 // Model untuk Payment Method
@@ -35,7 +34,6 @@ class TransactionController extends GetxController {
 
   GopaySaldoController get saldoController => Get.find<GopaySaldoController>();
   
-  // Tambahkan getter untuk HistoryTransactionController
   HistoryTransactionController get historyController => Get.find<HistoryTransactionController>();
 
   final List<PaymentMethod> availablePaymentMethods = [
@@ -68,20 +66,13 @@ class TransactionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Set default payment method ke ShopeePay
     _selectedPaymentMethod.value = availablePaymentMethods.firstWhere((method) => method.id == 2);
   }
 
-  // Getter untuk selected payment method
   PaymentMethod? get selectedPaymentMethod => _selectedPaymentMethod.value;
-
-  // Getter untuk show confirmation state
   bool get showConfirmation => _showConfirmation.value;
-
-  // Getter untuk processing state
   bool get isProcessingTransfer => _isProcessingTransfer.value;
 
-  // Method untuk toggle confirmation view
   void showTransferConfirmation() {
     _showConfirmation.value = true;
   }
@@ -90,14 +81,12 @@ class TransactionController extends GetxController {
     _showConfirmation.value = false;
   }
 
-  // Method untuk set payment method dari parameter atau dari bottomsheet
   void setPaymentMethod(PaymentMethod method) {
     if (method.isEnabled) {
       _selectedPaymentMethod.value = method;
     }
   }
 
-  // Method untuk set payment method berdasarkan ID
   void setPaymentMethodById(int id) {
     final method = availablePaymentMethods.firstWhere(
       (method) => method.id == id,
@@ -106,7 +95,6 @@ class TransactionController extends GetxController {
     setPaymentMethod(method);
   }
 
-  // Method untuk set payment method dari transfer page (ShopeePay atau BLU)
   void setPaymentMethodFromTransferPage(String methodName) {
     PaymentMethod? method;
     if (methodName.toLowerCase().contains('shopee')) {
@@ -170,18 +158,14 @@ class TransactionController extends GetxController {
     return nominal > 0 && nominal <= maxAmount;
   }
 
-  // Check if user has sufficient GoPay saldo
   bool get hasSufficientSaldo {
-    return saldoController.hasSufficientSaldo(nominalAsInt.toDouble());
+    return saldoController.hasSufficientSaldo(nominalAsInt);
   }
 
-  // Method untuk melakukan transfer (mengurangi saldo GoPay) - Updated
   Future<bool> executeTransfer() async {
     if (!isValidAmount || _isProcessingTransfer.value) {
       return false;
     }
-
-    // Check if user has sufficient saldo
     if (!hasSufficientSaldo) {
       Get.snackbar(
         'Saldo Tidak Cukup',
@@ -196,14 +180,11 @@ class TransactionController extends GetxController {
     _isProcessingTransfer.value = true;
 
     try {
-      // Simulate network delay
       await Future.delayed(Duration(seconds: 2));
 
-      // Deduct saldo
-      bool success = await saldoController.deductSaldo(nominalAsInt.toDouble());
+      bool success = await saldoController.deductSaldo(nominalAsInt);
 
       if (success) {
-        // Tambahkan transaksi ke history setelah transfer berhasil
         await _addTransferToHistory();
 
         Get.snackbar(
@@ -214,11 +195,9 @@ class TransactionController extends GetxController {
           colorText: Colors.green[800],
         );
 
-        // Reset form
         clearNominal();
         hideTransferConfirmation();
 
-        // Navigate back or to success page
         Get.back();
         return true;
       } else {
@@ -246,13 +225,11 @@ class TransactionController extends GetxController {
     }
   }
 
-  // Method baru untuk menambahkan transaksi transfer ke history
   Future<void> _addTransferToHistory() async {
     try {
       final selectedMethod = _selectedPaymentMethod.value;
       if (selectedMethod == null) return;
 
-      // Buat deskripsi berdasarkan payment method yang dipilih
       String description = 'Ditransfer ke ${selectedMethod.accountName}';
       String? secondaryDescription;
 
@@ -260,13 +237,12 @@ class TransactionController extends GetxController {
         secondaryDescription = '${selectedMethod.name} ${selectedMethod.accountNumber}';
       }
 
-      // Tambahkan transaksi ke history dengan amount negatif (keluar)
       await historyController.addTransaction(
         TransactionType.transferKeluar,
-        -nominalAsInt.toDouble(), // Negatif karena ini transfer keluar
+        -nominalAsInt.toDouble(), 
         description,
         secondaryDescription: secondaryDescription,
-        paymentMethod: 'GoPay Saldo', // Transfer menggunakan GoPay
+        paymentMethod: 'GoPay Saldo',
         transactionDate: DateTime.now(),
       );
 

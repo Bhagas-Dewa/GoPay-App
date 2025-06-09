@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/controllers/auth_controller.dart';
-import 'package:gopay_task/views/login/otp_page.dart';
+import 'package:gopay_task/views/auth/otp_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

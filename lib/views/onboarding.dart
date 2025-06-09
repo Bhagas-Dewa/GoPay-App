@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/views/home/home.dart';
-import 'package:gopay_task/views/login/start_page.dart';
+import 'package:gopay_task/views/auth/start_page.dart';
 
 class OnboardingSplash extends StatelessWidget {
   const OnboardingSplash({super.key});

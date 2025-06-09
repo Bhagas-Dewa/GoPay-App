@@ -18,7 +18,6 @@ class AuthService extends GetxService {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // Cek jika request butuh token
           if (options.path != '/check-email-login' &&
               options.path != '/login-pin' &&
               options.path != '/check-email-register' &&

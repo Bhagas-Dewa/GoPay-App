@@ -1,11 +1,10 @@
-// lib/models/user_model.dart
 class User {
   final int id;
   final String name;
   final String email;
-  final String? emailVerifiedAt; // Bisa jadi String atau null
-  final String? createdAt;       // Bisa jadi String atau null
-  final String? updatedAt;       // Bisa jadi String atau null
+  final String? emailVerifiedAt; 
+  final String? createdAt;       
+  final String? updatedAt;       
 
   User({
     required this.id,

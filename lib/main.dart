@@ -24,7 +24,10 @@ void main() async {
   // Initialize GetX controllers
   Get.put(StorageService());
   Get.put(AuthService());
-  Get.put(AuthController());
+  Get.put(AuthController(
+    authService: Get.find<AuthService>(), 
+    storageService: Get.find<StorageService>(),
+  ));
   Get.put(HomeController());
   Get.put(HistoryTransactionController()); 
   Get.put(GopaySaldoController(), permanent: true);
