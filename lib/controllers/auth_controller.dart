@@ -263,7 +263,6 @@ class AuthController extends GetxController {
     }
   }
 
-
   // --- Logout ---
   Future<void> logout() async {
     isLoading.value = true;

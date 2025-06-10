@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart'; 
 import 'package:gopay_task/views/home/kirim_terima/transfer/transfer_page.dart';
 import 'package:gopay_task/views/home/kirim_terima/transfer/transfer_transaction.dart';
-import 'helper/test_helpers.dart';
+import '../helper/test_helpers.dart';
 
 void main() {
   setUp(() {
