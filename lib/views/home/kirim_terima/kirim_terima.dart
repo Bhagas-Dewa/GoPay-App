@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gopay_task/views/home/kirim_terima/detail_kirim_terima.dart';
+import 'package:gopay_task/views/home/kirim_terima/hadiah/hadiah_page.dart';
 import 'package:gopay_task/views/home/kirim_terima/minta/minta_page.dart';
+import 'package:gopay_task/views/home/kirim_terima/riwayat/riwayat_kirimterima.dart';
+import 'package:gopay_task/views/home/kirim_terima/split_bill/split_bill_page.dart';
 import 'package:gopay_task/views/home/kirim_terima/transfer/transfer_page.dart';
 import 'package:gopay_task/widgets/button_lihatsemua.dart';
 
@@ -57,72 +60,77 @@ class KirimTerima extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      children: [
-                        Stack(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.transparent,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Color(0xFFFFFFFF),
-                                      Color(0xFFEDEDED),
-                                    ],
-                                    stops: [0.5, 1.0],
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => RiwayatKirimterima());
+                      },
+                      child: Column(
+                        children: [
+                          Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.transparent,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Color(0xFFFFFFFF),
+                                        Color(0xFFEDEDED),
+                                      ],
+                                      stops: [0.5, 1.0],
+                                    ),
+                                    borderRadius: BorderRadius.circular(45),
+                                    border: Border.all(
+                                      color: Color(0xFFEDEDED),
+                                      width: 1,
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(45),
-                                  border: Border.all(
-                                    color: Color(0xFFEDEDED),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'B',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF000000),
-                                      letterSpacing: -0.3,
+                                  child: Center(
+                                    child: Text(
+                                      'B',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF000000),
+                                        letterSpacing: -0.3,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              bottom: 2,
-                              right: 0,
-                              child: Container(
-                                height: 20,
-                                width: 20,
-                                child: Center(
-                                  child: Image.asset(
-                                    'assets/logo_shopee.png',
-                                    height: 20,
-                                    width: 20,
-                                    fit: BoxFit.contain,
+                              Positioned(
+                                bottom: 2,
+                                right: 0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/logo_shopee.png',
+                                      height: 20,
+                                      width: 20,
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 4),
-                        Text(
-                          'Bhagas',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: Color(0xFF626E7A),
-                            letterSpacing: -0.3,
+                            ],
                           ),
-                        ),
-                      ],
+                      
+                          SizedBox(height: 4),
+                          Text(
+                            'Bhagas',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Color(0xFF626E7A),
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
 
                     Column(
@@ -305,68 +313,78 @@ class KirimTerima extends StatelessWidget {
                       ),
                     ),
 
-                    Column(
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFDFF6FB),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/kirimterima_bill.png',
-                              height: 42,
-                              width: 42,
-                              fit: BoxFit.contain,
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(()=> SplitBillPage());
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 60,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFDFF6FB),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'assets/kirimterima_bill.png',
+                                height: 42,
+                                width: 42,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        Text(
-                          'Split bill',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: Color(0xFF626E7A),
-                            letterSpacing: -0.3,
-                            height: 1,
+                          SizedBox(height: 7),
+                          Text(
+                            'Split bill',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Color(0xFF626E7A),
+                              letterSpacing: -0.3,
+                              height: 1,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
-                    Column(
-                      children: [
-                        Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFD5EDF9),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/kirimterima_hadiah.png',
-                              height: 42,
-                              width: 42,
-                              fit: BoxFit.contain,
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(()=> HadiahPage());
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 60,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFD5EDF9),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                'assets/kirimterima_hadiah.png',
+                                height: 42,
+                                width: 42,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        Text(
-                          'Hadiah',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: Color(0xFF626E7A),
-                            letterSpacing: -0.3,
-                            height: 1,
+                          SizedBox(height: 7),
+                          Text(
+                            'Hadiah',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Color(0xFF626E7A),
+                              letterSpacing: -0.3,
+                              height: 1,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

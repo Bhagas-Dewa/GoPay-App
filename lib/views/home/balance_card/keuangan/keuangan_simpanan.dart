@@ -27,14 +27,12 @@ class _KeuanganSimpananState extends State<KeuanganSimpanan> {
       body: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Fixed elements - Background & Top Section
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: Column(
               children: [
-                // Background Image (fixed)
                 Image.asset(
                   'assets/background_simpanan.png',
                   height: 245,
@@ -69,10 +67,7 @@ class _KeuanganSimpananState extends State<KeuanganSimpanan> {
               physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  // Space for background image and title (they will be covered)
                   SizedBox(height: 175),
-
-                  // Top Rounded Container (now scrollable)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
@@ -486,7 +481,6 @@ class _KeuanganSimpananState extends State<KeuanganSimpanan> {
                     ),
                   ),
 
-                  // Add some padding at the bottom for scrolling beyond the bottom nav
                   SizedBox(height: 100),
                 ],
               ),

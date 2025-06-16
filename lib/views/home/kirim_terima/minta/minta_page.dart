@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gopay_task/views/home/kirim_terima/minta/qr_minta.dart';
 import 'package:gopay_task/widgets/appbar_primary.dart';
 import 'package:gopay_task/widgets/dottedline_curve.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
@@ -116,32 +118,37 @@ class MintaPage extends StatelessWidget {
 
             Padding(
               padding: const EdgeInsets.only(top: 15, bottom: 15, right: 12),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0XFF3DC66C).withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 6,
-                      offset: const Offset(0, 1),
-                    ),
-
-                    BoxShadow(
-                      color: Color(0XFF01AED6).withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 6,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                ),
-                child: Image.asset(
-                  'assets/kode_qr.png',
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.contain,
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(()=> QrMinta());
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0XFF3DC66C).withOpacity(0.4),
+                        spreadRadius: 1,
+                        blurRadius: 6,
+                        offset: const Offset(0, 1),
+                      ),
+                
+                      BoxShadow(
+                        color: Color(0XFF01AED6).withOpacity(0.4),
+                        spreadRadius: 1,
+                        blurRadius: 6,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    'assets/kode_qr.png',
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),

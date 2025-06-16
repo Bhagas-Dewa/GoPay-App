@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class BottomCurveClipper extends CustomClipper<Path> {
   @override
@@ -22,13 +21,18 @@ class BottomCurveClipper extends CustomClipper<Path> {
 }
 
 class BottomCurveBorderPainter extends CustomPainter {
+  final Color lineColor;
+
+  BottomCurveBorderPainter({
+    this.lineColor = Colors.white, 
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.white
-          ..strokeWidth = 1.5
-          ..style = PaintingStyle.stroke;
+    final paint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke;
 
     final path = Path();
     path.moveTo(0, size.height - 30);
@@ -43,5 +47,7 @@ class BottomCurveBorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant BottomCurveBorderPainter oldDelegate) {
+    return oldDelegate.lineColor != lineColor;
+  }
 }

@@ -10,7 +10,7 @@ class AppbarSecondary extends StatelessWidget implements PreferredSizeWidget {
   final Color titleColor;
   final FontWeight titleFontWeight;
   final double elevation;
-  final Widget? rightIcon; 
+  final Widget? rightIcon;
 
   const AppbarSecondary({
     Key? key,
